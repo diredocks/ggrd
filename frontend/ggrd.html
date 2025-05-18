@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ggrd: mjpeg websocket streamer!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="status">connecting...</div>
+  <div id="fps">FPS: 0</div>
+  <canvas id="backgroundCanvas"></canvas>
+  <canvas id="videoCanvas" width="640" height="480"></canvas>
+
+  <!-- order matters -->
+  <script type="module" src="./utils.js"></script>
+  <script type="module" src="./face.js"></script>
+  <script type="module" src="./video.js"></script>
+</body>
+</html>
