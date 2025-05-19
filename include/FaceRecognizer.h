@@ -59,10 +59,11 @@ public:
   FaceRecognizer() {
     detector_ = dlib::get_frontal_face_detector();
     try {
-      dlib::deserialize("shape_predictor_5_face_landmarks.dat") >> pose_model_;
+      dlib::deserialize("shape_predictor_68_face_landmarks.dat") >> pose_model_;
       dlib::deserialize("dlib_face_recognition_resnet_model_v1.dat") >> net_;
+      loadKnownFaces("./known_faces");
     } catch (const std::exception &e) {
-      spdlog::error("error loading landmark model: {}", e.what());
+      spdlog::error("error loading: {}", e.what());
       exit(EXIT_FAILURE);
     }
   };
@@ -72,8 +73,14 @@ public:
 private:
   cv::Mat frame_;
   dlib::frontal_face_detector detector_;
+
   dlib::shape_predictor pose_model_;
   anet_type net_;
+  std::vector<dlib::matrix<float, 0, 1>> known_descriptors_;
+  std::vector<std::string> known_labels_;
+  static constexpr double BEST_KNOWN_THRESHOLD = 0.4;
+  void loadKnownFaces(const std::string &folder);
+  std::optional<std::string> recognizeFace(const FaceInfo &faceInfo);
 
   // vector of last frame faces
   std::vector<FaceInfo> trackedFaces_;
