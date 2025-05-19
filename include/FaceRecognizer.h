@@ -49,8 +49,8 @@ using anet_type = loss_metric<fc_no_bias<
 struct FaceInfo {
   cv::Rect bbox;
   std::string label;
-  int id = -1;       // 唯一 ID，-1 表示未分配
-  int lostCount = 0; // 丢失计数器
+  int id = -1;       // unique id
+  int lostCount = 0; // lost frame counter
 };
 
 class FaceRecognizer {
@@ -74,24 +74,27 @@ private:
   dlib::shape_predictor pose_model_;
   anet_type net_;
 
-  // 上一帧跟踪到的人脸
+  // vector of last frame faces
   std::vector<FaceInfo> trackedFaces_;
-  // 给新出现的人脸分配 label 用的自增 ID
+  // id for new faces
   int nextLabelId_ = 0;
-  // 最大容忍丢失帧数
+  // max lost frame count
   static constexpr int MAX_LOST_COUNT = 5;
-  // 匹配阈值（像素距离）
+  // matching distance (in pixel)
   static constexpr double MATCH_DIST_THRESHOLD = 100.0;
 
   void updateTrackedFaces(const std::vector<FaceInfo> &newDetections);
   void matchFaces(std::vector<FaceInfo> &detectedFaces);
-  cv::Point centerOf(const cv::Rect &rect) const;
   std::vector<FaceInfo> detectFacesInFrame();
 
-  // 计算两个框中心点的欧氏距离
+  // dist of two points
   double euclideanDist(const cv::Point &a, const cv::Point &b) const {
     double dx = a.x - b.x;
     double dy = a.y - b.y;
     return std::sqrt(dx * dx + dy * dy);
+  }
+  // center of a rect
+  cv::Point centerOf(const cv::Rect &rect) const {
+    return cv::Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
   }
 };

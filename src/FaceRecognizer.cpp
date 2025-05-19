@@ -48,11 +48,12 @@ std::vector<FaceInfo> FaceRecognizer::detect() {
 
   auto detectedFaces = detectFacesInFrame();
   if (detectedFaces.empty()) {
-    // 没有检测到人脸，重置跟踪状态
+    // reset state if no face detected
     trackedFaces_.clear();
     nextLabelId_ = 0;
     return {};
   }
+  // update tracked faces
   matchFaces(detectedFaces);
   updateTrackedFaces(detectedFaces);
 
@@ -72,10 +73,6 @@ std::vector<FaceInfo> FaceRecognizer::detectFacesInFrame() {
   }
 
   return faces;
-}
-
-cv::Point FaceRecognizer::centerOf(const cv::Rect &rect) const {
-  return cv::Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
 }
 
 void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
@@ -103,7 +100,7 @@ void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
       detected.label = match.label;
       detected.lostCount = 0;
     } else {
-      // New face
+      // new face
       detected.id = nextLabelId_++;
       detected.label = std::to_string(detected.id);
       detected.lostCount = 0;
@@ -129,7 +126,7 @@ void FaceRecognizer::updateTrackedFaces(
     }
   }
 
-  // 添加当前帧的检测结果（这些已经更新了 id/lostCount = 0）
+  // add current frame
   updated.insert(updated.end(), newDetections.begin(), newDetections.end());
   trackedFaces_ = std::move(updated);
 }
