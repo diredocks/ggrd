@@ -5,12 +5,7 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_transforms/interpolation.h>
 #include <dlib/opencv.h>
-
-float euclideanDist(const cv::Point &a, const cv::Point &b) {
-  float dx = a.x - b.x;
-  float dy = a.y - b.y;
-  return std::sqrt(dx * dx + dy * dy);
-}
+#include <spdlog/spdlog.h>
 
 /*
 std::vector<FaceInfo> FaceRecognizer::detect() {
@@ -91,12 +86,10 @@ void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
     cv::Point detectedCenter = centerOf(detected.bbox);
 
     for (size_t i = 0; i < trackedFaces_.size(); ++i) {
-      if (detected.id != -1)
-        continue;
-
+      // find smallest dist from all candidates
       const auto &candidate = trackedFaces_[i];
       cv::Point trackedCenter = centerOf(candidate.bbox);
-      double dist = cv::norm(detectedCenter - trackedCenter);
+      auto dist = euclideanDist(detectedCenter, trackedCenter);
 
       if (dist < bestDistance) {
         bestDistance = dist;
@@ -107,13 +100,14 @@ void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
     if (bestMatchIdx >= 0) {
       const auto &match = trackedFaces_[bestMatchIdx];
       detected.id = match.id;
-      detected.label = std::to_string(match.id);
+      detected.label = match.label;
       detected.lostCount = 0;
     } else {
       // New face
       detected.id = nextLabelId_++;
       detected.label = std::to_string(detected.id);
       detected.lostCount = 0;
+      spdlog::info("new face detected, id={0:d}", detected.id);
     }
   }
 }
