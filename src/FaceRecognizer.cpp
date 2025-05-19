@@ -1,44 +1,10 @@
 // src/FaceRecognizer.cpp
 #include "FaceRecognizer.h"
-
 #include <dlib/image_processing.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_transforms/interpolation.h>
 #include <dlib/opencv.h>
 #include <spdlog/spdlog.h>
-
-/*
-std::vector<FaceInfo> FaceRecognizer::detect() {
-std::vector<FaceInfo> results;
-
-if (frame_.empty()) {
-  spdlog::warn("empty frame in detect()");
-  return results;
-}
-
-dlib::cv_image<dlib::bgr_pixel> cimg(frame_);
-std::vector<dlib::rectangle> faces = detector_(cimg); // detect faces
-
-  for (const auto &face : faces) {
-    // TODO: we should be holding here if face already detected
-
-    dlib::full_object_detection shape = pose_model_(cimg, face); // get points
-    dlib::matrix<dlib::rgb_pixel> face_chip; // chip to 150x150
-    dlib::extract_image_chip(
-        cimg, dlib::get_face_chip_details(shape, 150, 0.25), face_chip);
-    auto face_desc = net_(face_chip); // get description vectors
-
-
-    FaceInfo info;
-    info.bbox = cv::Rect(cv::Point(face.left(), face.top()),
-                         cv::Point(face.right(), face.bottom()));
-    info.label = "Unknown"; // 可添加识别逻辑
-    results.push_back(info);
-  }
-
-  return results;
-}
-*/
 
 std::vector<FaceInfo> FaceRecognizer::detect() {
   if (frame_.empty()) {
@@ -47,14 +13,10 @@ std::vector<FaceInfo> FaceRecognizer::detect() {
   }
 
   auto detectedFaces = detectFacesInFrame();
-  if (detectedFaces.empty()) {
-    // reset state if no face detected
-    trackedFaces_.clear();
-    nextLabelId_ = 0;
-    return {};
+  if (!detectedFaces.empty()) {
+    matchFaces(detectedFaces);
   }
   // update tracked faces
-  matchFaces(detectedFaces);
   updateTrackedFaces(detectedFaces);
 
   return detectedFaces;
@@ -69,6 +31,7 @@ std::vector<FaceInfo> FaceRecognizer::detectFacesInFrame() {
     FaceInfo face;
     face.bbox = cv::Rect(cv::Point(rect.left(), rect.top()),
                          cv::Point(rect.right(), rect.bottom()));
+    face.rect = rect;
     faces.push_back(face);
   }
 
@@ -102,9 +65,18 @@ void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
     } else {
       // new face
       detected.id = nextLabelId_++;
-      detected.label = std::to_string(detected.id);
+      detected.label = std::to_string(detected.id) + " | Unknown";
       detected.lostCount = 0;
       spdlog::info("new face detected, id={0:d}", detected.id);
+
+      // NOTE: suspecious sync problem...
+      dlib::cv_image<dlib::bgr_pixel> cimg(frame_);
+      dlib::full_object_detection shape =
+          pose_model_(cimg, detected.rect);    // get points
+      dlib::matrix<dlib::rgb_pixel> face_chip; // chip to 150x150
+      dlib::extract_image_chip(
+          cimg, dlib::get_face_chip_details(shape, 150, 0.25), face_chip);
+      auto face_desc = net_(face_chip); // get description vectors
     }
   }
 }
@@ -122,6 +94,10 @@ void FaceRecognizer::updateTrackedFaces(
       tracked.lostCount++;
       if (tracked.lostCount <= MAX_LOST_COUNT) {
         updated.push_back(tracked);
+      } else {
+        // tracked will get removed here
+        spdlog::info("face id={} removed after {} lost frames", tracked.id,
+                     tracked.lostCount);
       }
     }
   }

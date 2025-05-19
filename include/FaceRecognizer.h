@@ -49,6 +49,7 @@ using anet_type = loss_metric<fc_no_bias<
 struct FaceInfo {
   cv::Rect bbox;
   std::string label;
+  dlib::rectangle rect;
   int id = -1;       // unique id
   int lostCount = 0; // lost frame counter
 };
