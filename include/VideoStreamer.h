@@ -26,18 +26,18 @@ public:
   };
 
 private:
-  void captureLoop();    // 采集 + 推视频流
-  void faceDetectLoop(); // 专门做识别 + 推 json
+  void captureLoop();    // capture and stream
+  void faceDetectLoop(); // recognize and push
 
-  // 客户端列表
+  // vector of clients
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> &videoClients_;
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> &faceClients_;
 
-  // 队列与同步原语
+  // queue and sync
   std::deque<cv::Mat> frameQueue_;
   std::mutex queueMutex_;
   std::condition_variable queueCond_;
-  const size_t maxQueueSize_ = 5; // 队列长度上限*/
+  const size_t maxQueueSize_ = 5;
 
   cv::VideoCapture cap_;
   std::thread captureThread_;
