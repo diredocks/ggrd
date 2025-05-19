@@ -1,7 +1,7 @@
 // include/WebSocketServer.h
 #pragma once
 
-#include "Types.h"
+#include "Types.hpp"
 #include <App.h>
 #include <vector>
 

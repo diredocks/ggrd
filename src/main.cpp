@@ -1,6 +1,6 @@
 // src/main.cpp
-#include "VideoStreamer.h"
-#include "WebSocketServer.h"
+#include "VideoStreamer.hpp"
+#include "WebSocketServer.hpp"
 #include "spdlog/spdlog.h"
 
 int main() {

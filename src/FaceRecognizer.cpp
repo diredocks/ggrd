@@ -1,5 +1,5 @@
 // src/FaceRecognizer.cpp
-#include "FaceRecognizer.h"
+#include "FaceRecognizer.hpp"
 #include <dlib/image_processing.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_transforms/interpolation.h>

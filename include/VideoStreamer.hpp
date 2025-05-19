@@ -1,7 +1,7 @@
 // include/VideoStreamer.h
 #pragma once
 
-#include "Types.h"
+#include "Types.hpp"
 #include <App.h>
 #include <condition_variable>
 #include <deque>

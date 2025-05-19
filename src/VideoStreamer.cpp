@@ -1,6 +1,6 @@
 // src/VideoStreamer.cpp
-#include "VideoStreamer.h"
-#include "FaceRecognizer.h"
+#include "VideoStreamer.hpp"
+#include "FaceRecognizer.hpp"
 #include <chrono>
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
