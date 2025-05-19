@@ -65,6 +65,8 @@ void VideoStreamer::faceDetectLoop() {
 
   while (true) {
     if (!faceClients_.empty()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
       cv::Mat frame;
 
       std::unique_lock lk(queueMutex_);
@@ -75,7 +77,7 @@ void VideoStreamer::faceDetectLoop() {
 
       // let's detect
       recognizer.setFrame(frame);
-      std::vector<FaceInfo> faces = recognizer.detect();
+      std::vector<FaceInfo> faces = std::move(recognizer.detect());
 
       // 构造 JSON
       nlohmann::json j;
