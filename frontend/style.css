@@ -38,4 +38,31 @@ body {
 #fps {
   right: 10px;
 }
+#messages {
+  display: none; /* 初始隐藏 */
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-family: sans-serif;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+  z-index: 3;
+  max-height: 100px;
+  overflow-y: auto;
+  width: 300px;
+  text-align: left;
+}
 
+/* 每条消息的样式 */
+.message-entry {
+  margin: 2px 0;
+  transition: opacity 1s ease;
+}
+
+/* 淡出效果 */
+.fade-out {
+  opacity: 0;
+}
