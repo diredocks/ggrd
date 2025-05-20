@@ -90,6 +90,7 @@ void VideoStreamer::faceDetectLoop() {
                             {"y", f.bbox.y},
                             {"w", f.bbox.width},
                             {"h", f.bbox.height},
+                            {"id", f.id},
                             {"label", f.label}});
     }
     auto msg = j.dump();
