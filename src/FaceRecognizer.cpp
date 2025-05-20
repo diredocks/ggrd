@@ -67,10 +67,11 @@ void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
       // new face
       detected.id = nextLabelId_++;
       if (auto maybe_label = recognizeFace(detected); maybe_label.has_value()) {
-        detected.label = std::to_string(detected.id) + " | " + *maybe_label;
-        spdlog::info("recognized face: {}", *maybe_label);
+        detected.label = *maybe_label;
+        spdlog::info("new recognized face detected, id={} label={}",
+                     detected.id, *maybe_label);
       } else {
-        detected.label = std::to_string(detected.id) + " | Unknown";
+        detected.label = "Unknown";
         spdlog::info("new unknown face detected, id={}", detected.id);
       }
       detected.lostCount = 0;
@@ -93,8 +94,8 @@ void FaceRecognizer::updateTrackedFaces(
         updated.push_back(tracked);
       } else {
         // tracked will get removed here
-        spdlog::info("face id={} removed after {} lost frames", tracked.id,
-                     tracked.lostCount);
+        spdlog::info("face id={} label={} removed after {} lost frames",
+                     tracked.id, tracked.label, tracked.lostCount);
       }
     }
   }
