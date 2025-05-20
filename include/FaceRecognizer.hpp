@@ -70,6 +70,12 @@ public:
   void setFrame(const cv::Mat &frame) { frame_ = frame; };
   std::vector<FaceInfo> detect();
 
+  using FaceEventCallback =
+      std::function<void(const FaceInfo &, const std::string &event)>;
+  void setEventCallback(FaceEventCallback cb) {
+    eventCallback_ = std::move(cb);
+  }
+
 private:
   cv::Mat frame_;
   dlib::frontal_face_detector detector_;
@@ -105,4 +111,6 @@ private:
   cv::Point centerOf(const cv::Rect &rect) const {
     return cv::Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
   }
+
+  FaceEventCallback eventCallback_ = nullptr;
 };

@@ -62,6 +62,20 @@ void VideoStreamer::captureLoop() {
 void VideoStreamer::faceDetectLoop() {
   FaceRecognizer recognizer;
 
+  recognizer.setEventCallback(
+      [this](const FaceInfo &face, const std::string &event) {
+        if (msgClients_.empty())
+          return;
+        // build JSON
+        nlohmann::json j;
+        j["event"] = event;
+        j["label"] = face.label;
+        auto msg = j.dump();
+        for (auto *ws : msgClients_) {
+          ws->send(msg, uWS::OpCode::TEXT);
+        }
+      });
+
   while (true) {
     if (faceClients_.empty()) {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
