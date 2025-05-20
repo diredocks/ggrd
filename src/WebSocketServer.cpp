@@ -37,22 +37,6 @@ void WebSocketServer::run() {
                  spdlog::info("face client disconnected, remaining: {0:d}",
                               faceClients_.size());
                }})
-      .ws<PerSocketData>(
-          "/msg",
-          {.open =
-               [this](auto *ws) {
-                 msgClients_.push_back(ws);
-                 spdlog::info("msg client connected, total:  {0:d}",
-                              msgClients_.size());
-               },
-           .close =
-               [this](auto *ws, int, std::string_view) {
-                 msgClients_.erase(
-                     std::remove(msgClients_.begin(), msgClients_.end(), ws),
-                     msgClients_.end());
-                 spdlog::info("msg client disconnected, remaining: {0:d}",
-                              msgClients_.size());
-               }})
       .listen(9001,
               [](auto *listen_socket) {
                 if (listen_socket) {

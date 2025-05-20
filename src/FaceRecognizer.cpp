@@ -75,10 +75,6 @@ void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
         spdlog::info("new unknown face detected, id={}", detected.id);
       }
       detected.lostCount = 0;
-
-      if (eventCallback_) {
-        eventCallback_(detected, "come");
-      }
     }
   }
 }
@@ -100,9 +96,6 @@ void FaceRecognizer::updateTrackedFaces(
         // tracked will get removed here
         spdlog::info("face id={} label={} removed after {} lost frames",
                      tracked.id, tracked.label, tracked.lostCount);
-        if (eventCallback_) {
-          eventCallback_(tracked, "left");
-        }
       }
     }
   }

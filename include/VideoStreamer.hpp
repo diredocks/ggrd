@@ -14,10 +14,8 @@ class VideoStreamer {
 public:
   VideoStreamer(
       std::vector<uWS::WebSocket<false, true, PerSocketData> *> &videoClients,
-      std::vector<uWS::WebSocket<false, true, PerSocketData> *> &faceClients,
-      std::vector<uWS::WebSocket<false, true, PerSocketData> *> &msgClients)
-      : videoClients_(videoClients), faceClients_(faceClients),
-        msgClients_(msgClients) {};
+      std::vector<uWS::WebSocket<false, true, PerSocketData> *> &faceClients)
+      : videoClients_(videoClients), faceClients_(faceClients) {};
   ~VideoStreamer() {
     captureThread_.join();
     faceThread_.join();
@@ -34,7 +32,6 @@ private:
   // vector of clients
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> &videoClients_;
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> &faceClients_;
-  std::vector<uWS::WebSocket<false, true, PerSocketData> *> &msgClients_;
 
   // queue and sync
   std::deque<cv::Mat> frameQueue_;

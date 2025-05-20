@@ -12,7 +12,6 @@ public:
 
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> videoClients_;
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> faceClients_;
-  std::vector<uWS::WebSocket<false, true, PerSocketData> *> msgClients_;
 
 private:
   uWS::App app_;
