@@ -78,7 +78,7 @@ private:
   anet_type net_;
   std::vector<dlib::matrix<float, 0, 1>> known_descriptors_;
   std::vector<std::string> known_labels_;
-  static constexpr double BEST_KNOWN_THRESHOLD = 0.4;
+  static constexpr double BEST_KNOWN_THRESHOLD = 0.5;
   void loadKnownFaces(const std::string &folder);
   std::optional<std::string> recognizeFace(const FaceInfo &faceInfo);
 
@@ -89,7 +89,7 @@ private:
   // max lost frame count
   static constexpr int MAX_LOST_COUNT = 5;
   // matching distance (in pixel)
-  static constexpr double MATCH_DIST_THRESHOLD = 100.0;
+  static constexpr double DIST_THRESHOLD = 100.0;
 
   void updateTrackedFaces(const std::vector<FaceInfo> &newDetections);
   void matchFaces(std::vector<FaceInfo> &detectedFaces);

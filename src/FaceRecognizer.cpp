@@ -42,7 +42,7 @@ std::vector<FaceInfo> FaceRecognizer::detectFacesInFrame() {
 void FaceRecognizer::matchFaces(std::vector<FaceInfo> &detectedFaces) {
   for (auto &detected : detectedFaces) {
     int bestMatchIdx = -1;
-    double bestDistance = MATCH_DIST_THRESHOLD;
+    double bestDistance = DIST_THRESHOLD;
 
     cv::Point detectedCenter = centerOf(detected.bbox);
 
