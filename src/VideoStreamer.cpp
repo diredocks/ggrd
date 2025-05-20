@@ -82,7 +82,7 @@ void VideoStreamer::faceDetectLoop() {
     recognizer.setFrame(frame);
     std::vector<FaceInfo> faces = std::move(recognizer.detect());
 
-    // 构造 JSON
+    // build JSON
     nlohmann::json j;
     j["faces"] = nlohmann::json::array();
     for (auto &f : faces) {
@@ -94,7 +94,7 @@ void VideoStreamer::faceDetectLoop() {
     }
     auto msg = j.dump();
 
-    // 推给所有人脸客户端
+    // push to clients
     for (auto *ws : faceClients_) {
       ws->send(msg, uWS::OpCode::TEXT);
     }
