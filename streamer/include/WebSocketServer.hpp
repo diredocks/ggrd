@@ -7,12 +7,14 @@
 
 class WebSocketServer {
 public:
-  WebSocketServer() {};
+  WebSocketServer() = default;
   void run();
+  void stop();
 
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> videoClients_;
   std::vector<uWS::WebSocket<false, true, PerSocketData> *> faceClients_;
 
 private:
   uWS::App app_;
+  uWS::Loop *loop_{nullptr};
 };

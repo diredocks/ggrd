@@ -3,6 +3,8 @@
 #include "spdlog/spdlog.h"
 
 void WebSocketServer::run() {
+  loop_ = uWS::Loop::get();
+
   app_.ws<PerSocketData>(
           "/stream",
           {.compression = uWS::CompressOptions(uWS::DEDICATED_COMPRESSOR |
@@ -44,4 +46,18 @@ void WebSocketServer::run() {
                 }
               })
       .run();
+}
+
+void WebSocketServer::stop() {
+  if (loop_) {
+    // Close all WebSocket connections
+    for (auto *ws : videoClients_) {
+      ws->end();
+    }
+    for (auto *ws : faceClients_) {
+      ws->end();
+    }
+    videoClients_.clear();
+    faceClients_.clear();
+  }
 }

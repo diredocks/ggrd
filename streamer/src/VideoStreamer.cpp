@@ -9,7 +9,7 @@ void VideoStreamer::captureLoop() {
   cv::Mat frame;
   std::vector<uchar> buffer;
 
-  while (true) {
+  while (running_) {
     if (videoClients_.empty()) {
       if (cap_.isOpened()) {
         cap_.release();
@@ -62,7 +62,7 @@ void VideoStreamer::captureLoop() {
 void VideoStreamer::faceDetectLoop() {
   FaceRecognizer recognizer;
 
-  while (true) {
+  while (running_) {
     if (faceClients_.empty()) {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       continue;

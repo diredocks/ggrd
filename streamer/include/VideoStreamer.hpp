@@ -3,6 +3,7 @@
 
 #include "Types.hpp"
 #include <App.h>
+#include <atomic>
 #include <condition_variable>
 #include <deque>
 #include <mutex>
@@ -16,13 +17,22 @@ public:
       std::vector<uWS::WebSocket<false, true, PerSocketData> *> &videoClients,
       std::vector<uWS::WebSocket<false, true, PerSocketData> *> &faceClients)
       : videoClients_(videoClients), faceClients_(faceClients) {};
-  ~VideoStreamer() {
-    captureThread_.join();
-    faceThread_.join();
-  };
+  ~VideoStreamer() { stop(); };
   void start() {
     captureThread_ = std::thread(&VideoStreamer::captureLoop, this);
-    faceThread_ = std::thread(&VideoStreamer::faceDetectLoop, this);
+    detectThread_ = std::thread(&VideoStreamer::faceDetectLoop, this);
+  };
+  void stop() {
+    running_ = false;
+    if (captureThread_.joinable()) {
+      captureThread_.join();
+    }
+    if (detectThread_.joinable()) {
+      detectThread_.join();
+    }
+    if (cap_.isOpened()) {
+      cap_.release();
+    }
   };
 
 private:
@@ -41,5 +51,6 @@ private:
 
   cv::VideoCapture cap_;
   std::thread captureThread_;
-  std::thread faceThread_;
+  std::thread detectThread_;
+  std::atomic<bool> running_{true};
 };
