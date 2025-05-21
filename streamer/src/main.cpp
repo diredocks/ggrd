@@ -5,12 +5,14 @@
 #include <iostream>
 
 int main() {
-  std::cout << "                         .___" << std::endl;
-  std::cout << "   ____   ___________  __| _/" << std::endl;
-  std::cout << "  / ___\\ / ___\\_  __ \\/ __ |" << std::endl;
-  std::cout << " / /_/  > /_/  >  | \\/ /_/ |" << std::endl;
-  std::cout << " \\___  /\\___  /|__|  \\____ |" << std::endl;
-  std::cout << "/_____//_____/            \\/" << std::endl;
+  std::cout << R"(
+                         .___
+   ____   ___________  __| _/
+  / ___\ / ___\_  __ \/ __ | 
+ / /_/  > /_/  >  | \/ /_/ | 
+ \___  /\___  /|__|  \____ | 
+/_____//_____/            \/ 
+  )" << std::endl;
   std::cout << std::endl;
 
   spdlog::set_pattern("[%C-%m-%d %H:%M:%S] [%^%L%$] %v");
