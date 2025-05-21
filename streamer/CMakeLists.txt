@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(ggrd LANGUAGES C CXX)
+project(ggrd-streamer LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
