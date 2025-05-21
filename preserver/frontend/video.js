@@ -4,6 +4,7 @@ import {
 } from './utils.js';
 
 import { faceDataRaw, smoothFaces, drawFaceBoxes, faceDataSmoothed } from './face.js';
+import { checkFaces } from './msg.js';
 
 const ws = new WebSocket('ws://127.0.0.1:9001/stream');
 ws.binaryType = 'arraybuffer';
@@ -30,6 +31,7 @@ ws.onmessage = async (event) => {
 
     smoothFaces(faceDataRaw);
     drawFaceBoxes(faceDataSmoothed);
+    checkFaces();
 
     countFrameAndUpdateFPS();
   } catch (e) {

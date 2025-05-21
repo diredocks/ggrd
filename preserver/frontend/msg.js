@@ -20,7 +20,7 @@ function showMessage(text) {
   }, 3000);
 }
 
-function checkFaces() {
+export function checkFaces() {
   const now = Date.now();
   const currentIds = new Set(faceDataRaw.map(f => f.id));
 
@@ -54,5 +54,3 @@ function checkFaces() {
     }
   }
 }
-
-setInterval(checkFaces, CHECK_INTERVAL);
