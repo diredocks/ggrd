@@ -7,6 +7,11 @@ import (
 
 func main() {
 	SetLogger()
+
+	if err := initDB(); err != nil {
+		Logger.Fatalf("initialize database: %v", err)
+	}
+
 	SetRoutes()
 
 	// Connect to WebSocket streaming servers

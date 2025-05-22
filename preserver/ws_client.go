@@ -11,13 +11,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var (
-	knownFaces  = make(map[int]time.Time) // id -> last seen time
-	faceTimeout = 1 * time.Second
-	connTimeout = 5 * time.Second
-	frameMu     sync.RWMutex
-	latestFrame image.Image
-)
+type FaceTimestamps struct {
+	FirstSeen time.Time
+	LastSeen  time.Time
+}
 
 type Face struct {
 	ID    int    `json:"id"`
@@ -31,6 +28,14 @@ type Face struct {
 type FaceMessage struct {
 	Faces []Face `json:"faces"`
 }
+
+var (
+	knownFaces  = make(map[int]*FaceTimestamps) // id -> timestamps
+	faceTimeout = 1 * time.Second
+	connTimeout = 5 * time.Second
+	frameMu     sync.RWMutex
+	latestFrame image.Image
+)
 
 func connectWS(url string, msgChan chan<- []byte) {
 	for {
@@ -86,23 +91,43 @@ func handleFaceMessage(data []byte) error {
 		id := face.ID
 
 		_, exists := knownFaces[id]
-		if !exists {
-			rect := image.Rect(face.X, face.Y, face.X+face.W, face.Y+face.H)
-			cropped := cropImage(img, rect)
-
-			var buf bytes.Buffer
-			jpeg.Encode(&buf, cropped, nil)
-			Logger.Info("new face detected", "id", face.ID, "label", face.Label)
-			// TODO: insert into db here
+		if exists {
+			knownFaces[id].LastSeen = now // update LastSeen timestamp
+			continue
 		}
-		knownFaces[id] = now
+
+		rect := image.Rect(face.X, face.Y, face.X+face.W, face.Y+face.H)
+		cropped := cropImage(img, rect)
+
+		var buf bytes.Buffer
+		jpeg.Encode(&buf, cropped, nil)
+		Logger.Info("new face detected", "id", face.ID, "label", face.Label)
+
+		faceCrop := &FaceCrop{
+			FaceID:    face.ID,
+			FirstSeen: now.Unix(),
+			Label:     face.Label,
+			Image:     buf.Bytes(),
+		}
+		if err := insertFaceCrop(faceCrop); err != nil {
+			Logger.Errorf("failed to insert face crop: %v", err)
+		}
+
+		knownFaces[id] = &FaceTimestamps{
+			FirstSeen: now,
+			LastSeen:  now,
+		}
 	}
 
-	for id, lastSeen := range knownFaces {
-		if now.Sub(lastSeen) > faceTimeout {
-			Logger.Info("left", "face", id)
+	for id, ts := range knownFaces {
+		if now.Sub(ts.LastSeen) > faceTimeout {
+			Logger.Info("LastSeen", "face", id)
+
+			if err := updateFaceLastSeen(id, ts.FirstSeen.Unix(), now.Unix()); err != nil {
+				Logger.Errorf("update face LastSeen: %v", err)
+			}
+
 			delete(knownFaces, id)
-			// TODO: insert into db here
 		}
 	}
 	return nil
