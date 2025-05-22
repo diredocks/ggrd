@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 )
 
 func main() {
-
+	SetLogger()
 	SetRoutes()
 
 	// Connect to WebSocket streaming servers
@@ -22,6 +21,6 @@ func main() {
 /_____//_____/            \/ [p]
 	`)
 
-	log.Println("preserver listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	Logger.Info("preserver listening on :8080")
+	Logger.Fatal(http.ListenAndServe(":8080", nil))
 }

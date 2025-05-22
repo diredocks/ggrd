@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"image"
 	"image/jpeg"
-	"log"
 	"sync"
 	"time"
 
@@ -37,7 +36,7 @@ func connectWS(url string, msgChan chan<- []byte) {
 	for {
 		c, _, err := websocket.DefaultDialer.Dial(url, nil)
 		if err != nil {
-			log.Printf("error connecting %s: %v", url, err)
+			Logger.Errorf("connecting %s: %v", url, err)
 			time.Sleep(connTimeout)
 			continue
 		}
@@ -48,7 +47,7 @@ func connectWS(url string, msgChan chan<- []byte) {
 			if websocket.IsCloseError(err) {
 				break
 			} else if err != nil {
-				log.Printf("read error: %v", err)
+				Logger.Errorf("read: %v", err)
 			}
 
 			msgChan <- data
@@ -92,7 +91,7 @@ func handleFaceMessage(data []byte) error {
 
 			var buf bytes.Buffer
 			jpeg.Encode(&buf, cropped, nil)
-			log.Printf("new face detected: id=%d label=%s", face.ID, face.Label)
+			Logger.Info("new face detected", "id", face.ID, "label", face.Label)
 			// TODO: insert into db here
 		}
 		knownFaces[id] = now
@@ -100,7 +99,7 @@ func handleFaceMessage(data []byte) error {
 
 	for id, lastSeen := range knownFaces {
 		if now.Sub(lastSeen) > faceTimeout {
-			log.Println("face", id, "left at", now)
+			Logger.Info("left", "face", id)
 			delete(knownFaces, id)
 			// TODO: insert into db here
 		}
@@ -120,11 +119,11 @@ func StartWSConnections(endpointURL string) {
 			select {
 			case data := <-streamChan:
 				if err := handleStreamMessage(data); err != nil {
-					log.Printf("error handling stream message: %v", err)
+					Logger.Errorf("stream message: %v", err)
 				}
 			case data := <-faceChan:
 				if err := handleFaceMessage(data); err != nil {
-					log.Printf("error handling face message: %v", err)
+					Logger.Errorf("face message: %v", err)
 				}
 			}
 		}
