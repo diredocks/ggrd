@@ -15,6 +15,7 @@ import (
 var (
 	knownFaces  = make(map[int]time.Time) // id -> last seen time
 	faceTimeout = 1 * time.Second
+	connTimeout = 5 * time.Second
 	frameMu     sync.RWMutex
 	latestFrame image.Image
 )
@@ -36,17 +37,18 @@ func connectWS(url string, msgChan chan<- []byte) {
 	for {
 		c, _, err := websocket.DefaultDialer.Dial(url, nil)
 		if err != nil {
-			log.Printf("connect error: %v", err)
-			time.Sleep(5 * time.Second)
+			log.Printf("error connecting %s: %v", url, err)
+			time.Sleep(connTimeout)
 			continue
 		}
 		defer c.Close()
 
 		for {
 			_, data, err := c.ReadMessage()
-			if err != nil {
-				log.Printf("read error: %v", err)
+			if websocket.IsCloseError(err) {
 				break
+			} else if err != nil {
+				log.Printf("read error: %v", err)
 			}
 
 			msgChan <- data
