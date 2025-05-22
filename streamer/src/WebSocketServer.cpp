@@ -42,7 +42,7 @@ void WebSocketServer::run() {
       .listen(9001,
               [](auto *listen_socket) {
                 if (listen_socket) {
-                  spdlog::info("server listening at :9001");
+                  spdlog::info("streamer listening at :9001");
                 }
               })
       .run();
