@@ -121,7 +121,7 @@ func handleFaceMessage(data []byte) error {
 
 	for id, ts := range knownFaces {
 		if now.Sub(ts.LastSeen) > faceTimeout {
-			Logger.Info("LastSeen", "face", id)
+			Logger.Info("seems to went away", "id", id)
 
 			if err := updateFaceLastSeen(id, ts.FirstSeen.Unix(), now.Unix()); err != nil {
 				Logger.Errorf("update face LastSeen: %v", err)
