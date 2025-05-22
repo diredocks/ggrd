@@ -1,4 +1,5 @@
 import { videoCtx } from './utils.js';
+import { config } from './config.js';
 
 export let faceDataRaw = [];
 export let faceDataSmoothed = [];
@@ -88,7 +89,7 @@ export function drawFaceBoxes(faces) {
   }
 }
 
-const faceWs = new WebSocket('ws://127.0.0.1:9001/face');
+const faceWs = new WebSocket(`${config.wsBaseUrl}${config.endpoints.face}`);
 faceWs.onmessage = (event) => {
   try {
     const data = JSON.parse(event.data);

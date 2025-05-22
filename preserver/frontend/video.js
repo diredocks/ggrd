@@ -2,11 +2,12 @@ import {
   statusEl, videoCtx, videoCanvas, backgroundCtx, backgroundCanvas,
   countFrameAndUpdateFPS
 } from './utils.js';
+import { config } from './config.js';
 
 import { faceDataRaw, smoothFaces, drawFaceBoxes, faceDataSmoothed } from './face.js';
 import { checkFaces } from './msg.js';
 
-const ws = new WebSocket('ws://127.0.0.1:9001/stream');
+const ws = new WebSocket(`${config.wsBaseUrl}${config.endpoints.stream}`);
 ws.binaryType = 'arraybuffer';
 
 ws.onopen = () => {
