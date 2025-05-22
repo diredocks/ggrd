@@ -1,9 +1,11 @@
 // src/WebSocketServer.cpp
 #include "WebSocketServer.hpp"
-#include "spdlog/spdlog.h"
+#include "ConfigManager.hpp"
+#include <spdlog/spdlog.h>
 
 void WebSocketServer::run() {
   loop_ = uWS::Loop::get();
+  const auto &config = ConfigManager::getInstance().getConfig();
 
   app_.ws<PerSocketData>(
           "/stream",
@@ -39,10 +41,12 @@ void WebSocketServer::run() {
                  spdlog::info("face client disconnected, remaining: {0:d}",
                               faceClients_.size());
                }})
-      .listen(9001,
+      .listen(config.server.port,
               [](auto *listen_socket) {
                 if (listen_socket) {
-                  spdlog::info("streamer listening at :9001");
+                  spdlog::info(
+                      "streamer listening at :{}",
+                      ConfigManager::getInstance().getConfig().server.port);
                 }
               })
       .run();

@@ -1,10 +1,11 @@
 // src/main.cpp
+#include "ConfigManager.hpp"
 #include "VideoStreamer.hpp"
 #include "WebSocketServer.hpp"
-#include "spdlog/spdlog.h"
 #include <csignal>
 #include <cstdlib>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 static WebSocketServer *g_server = nullptr;
 static VideoStreamer *g_streamer = nullptr;
@@ -24,7 +25,7 @@ void signalHandler(int signum) {
   exit(EXIT_SUCCESS);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   std::cout << R"(
                          .___
    ____   ___________  __| _/
@@ -36,6 +37,16 @@ int main() {
   std::cout << std::endl;
 
   spdlog::set_pattern("[%C-%m-%d %H:%M:%S] [%^%L%$] %v");
+
+  std::string configPath = "config.json";
+  if (argc > 1) {
+    configPath = argv[1];
+  }
+
+  if (!ConfigManager::getInstance().loadConfig(configPath)) {
+    spdlog::error("loading configuration from {}", configPath);
+    return 1;
+  }
 
   signal(SIGINT, signalHandler);
 
