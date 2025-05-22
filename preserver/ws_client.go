@@ -48,6 +48,7 @@ func connectWS(url string, msgChan chan<- []byte) {
 				break
 			} else if err != nil {
 				Logger.Errorf("read: %v", err)
+				break
 			}
 
 			msgChan <- data
