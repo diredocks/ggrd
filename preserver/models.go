@@ -9,8 +9,8 @@ import (
 var db *sql.DB
 
 type FaceCrop struct {
-	ID        int    `json:"-" db:"id"`       // internal auto-incrementing ID
-	FaceID    int    `json:"id" db:"face_id"` // external face ID from detection
+	ID        int    `json:"id" db:"id"`           // internal auto-incrementing ID
+	FaceID    int    `json:"face_id" db:"face_id"` // external face ID from detection
 	FirstSeen int64  `json:"first_seen" db:"first_seen"`
 	LastSeen  int64  `json:"last_seen" db:"last_seen"`
 	Label     string `json:"label" db:"label"`
