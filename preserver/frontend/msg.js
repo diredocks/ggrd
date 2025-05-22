@@ -31,7 +31,7 @@ export function checkFaces() {
     if (!seenFaces.has(id)) {
       // 新人脸
       seenFaces.set(id, { lastSeen: now, visible: true, label });
-      showMessage(`🏰 ${label} 驾到！`);
+      showMessage(`👋 ${label} 驾到！`);
     } else {
       // 已知人脸更新
       const info = seenFaces.get(id);
@@ -39,7 +39,7 @@ export function checkFaces() {
 
       if (!info.visible) {
         info.visible = true;
-        showMessage(`🐴 ${info.label} 驾到！`);
+        showMessage(`🤝 ${info.label} 驾到！`);
       }
     }
   }
