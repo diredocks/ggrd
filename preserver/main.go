@@ -19,9 +19,9 @@ func main() {
   / ___\ / ___\_  __ \/ __ | 
  / /_/  > /_/  >  | \/ /_/ | 
  \___  /\___  /|__|  \____ | 
-/_____//_____/            \/ 
+/_____//_____/            \/ [p]
 	`)
 
-	log.Println("API and frontend server listening on :8080")
+	log.Println("preserver listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
