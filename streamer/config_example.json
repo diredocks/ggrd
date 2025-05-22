@@ -1,0 +1,13 @@
+{
+    "server": {
+        "port": 9001
+    },
+    "face_recognition": {
+        "model_path": "shape_predictor_68_face_landmarks.dat",
+        "face_recognition_model_path": "dlib_face_recognition_resnet_model_v1.dat",
+        "known_faces_folder": "known_faces",
+        "best_known_threshold": 0.5,
+        "distance_threshold": 100.0,
+        "max_lost_count": 5
+    }
+} 
