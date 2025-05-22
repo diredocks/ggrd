@@ -37,22 +37,14 @@ int main() {
 
   spdlog::set_pattern("[%C-%m-%d %H:%M:%S] [%^%L%$] %v");
 
-  // Set up signal handlers
   signal(SIGINT, signalHandler);
 
   WebSocketServer server;
   VideoStreamer streamer(server.videoClients_, server.faceClients_);
-
-  // Store global pointers for signal handler
   g_server = &server;
   g_streamer = &streamer;
 
   streamer.start();
   server.run();
-
-  // Clean up on normal exit
-  streamer.stop();
-  server.stop();
-
   return 0;
 }
