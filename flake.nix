@@ -39,6 +39,7 @@
           gotools
           golangci-lint
           gopls
+          sqlite
         ];
       };
     });
