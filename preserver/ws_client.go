@@ -99,15 +99,18 @@ func handleFaceMessage(data []byte) error {
 		rect := image.Rect(face.X, face.Y, face.X+face.W, face.Y+face.H)
 		cropped := cropImage(img, rect)
 
-		var buf bytes.Buffer
-		jpeg.Encode(&buf, cropped, nil)
+		var img_buf bytes.Buffer
+		var crop_buf bytes.Buffer
+		jpeg.Encode(&img_buf, img, nil)
+		jpeg.Encode(&crop_buf, cropped, nil)
 		Logger.Info("new face detected", "id", face.ID, "label", face.Label)
 
 		faceCrop := &FaceCrop{
 			FaceID:    face.ID,
 			FirstSeen: now.Unix(),
 			Label:     face.Label,
-			Image:     buf.Bytes(),
+			Crop:      crop_buf.Bytes(),
+			Frame:     img_buf.Bytes(),
 		}
 		if err := insertFaceCrop(faceCrop); err != nil {
 			Logger.Errorf("failed to insert face crop: %v", err)

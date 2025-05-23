@@ -14,7 +14,8 @@ type FaceCrop struct {
 	FirstSeen int64  `json:"first_seen" db:"first_seen"`
 	LastSeen  int64  `json:"last_seen" db:"last_seen"`
 	Label     string `json:"label" db:"label"`
-	Image     []byte `json:"-" db:"image"`
+	Crop      []byte `json:"-" db:"crop"`
+	Frame     []byte `json:"-" db:"frame"`
 }
 
 func initDB() error {
@@ -32,7 +33,8 @@ func initDB() error {
 			first_seen INTEGER NOT NULL,
 			last_seen INTEGER NOT NULL,
 			label TEXT NOT NULL,
-			image BLOB NOT NULL
+			crop BLOB NOT NULL,
+			frame BLOB NOT NULL
 		)
 	`)
 	return err
@@ -41,9 +43,9 @@ func initDB() error {
 func insertFaceCrop(face *FaceCrop) error {
 	_, err := db.Exec(
 		`INSERT INTO face_crops
-		(face_id, first_seen, last_seen, label, image)
-		VALUES (?, ?, 0, ?, ?)`,
-		face.FaceID, face.FirstSeen, face.Label, face.Image,
+		(face_id, first_seen, last_seen, label, crop, frame)
+		VALUES (?, ?, 0, ?, ?, ?)`,
+		face.FaceID, face.FirstSeen, face.Label, face.Crop, face.Frame,
 	)
 	return err
 }
@@ -94,10 +96,26 @@ func getFaceCrops(timeFilter *int64, labelFilter *string) ([]FaceCrop, error) {
 func getFaceCropByID(id int) (*FaceCrop, error) {
 	var face FaceCrop
 	err := db.QueryRow(
-		`SELECT id, image 
+		`SELECT id, crop 
 		FROM face_crops WHERE id = ?`,
 		id,
-	).Scan(&face.ID, &face.Image)
+	).Scan(&face.ID, &face.Crop)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &face, nil
+}
+
+func getFrameByID(id int) (*FaceCrop, error) {
+	var face FaceCrop
+	err := db.QueryRow(
+		`SELECT id, frame 
+		FROM face_crops WHERE id = ?`,
+		id,
+	).Scan(&face.ID, &face.Frame)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
