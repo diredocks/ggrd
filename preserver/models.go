@@ -64,7 +64,7 @@ func getFaceCrops(timeFilter *int64, labelFilter *string) ([]FaceCrop, error) {
 	args := []any{}
 
 	if timeFilter != nil {
-		query += ` AND (first_seen <= ? OR last_seen >= ?)`
+		query += ` AND (first_seen <= ? AND last_seen >= ?)`
 		args = append(args, *timeFilter, *timeFilter)
 	}
 
