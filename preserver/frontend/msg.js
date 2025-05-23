@@ -4,7 +4,7 @@ import { faceDataRaw } from './face.js';
 const DISAPPEAR_DELAY = 500;
 const CHECK_INTERVAL = 500;
 
-const seenFaces = new Map(); // id -> { lastSeen, visible, label }
+const seenFaces = new Map(); // id -> { firstSeen, lastSeen, visible, label }
 
 function showMessage(text) {
   const msgBox = document.getElementById('msg');
@@ -30,7 +30,7 @@ export function checkFaces() {
 
     if (!seenFaces.has(id)) {
       // 新人脸
-      seenFaces.set(id, { lastSeen: now, visible: true, label });
+      seenFaces.set(id, { firstSeen: now, lastSeen: now, visible: true, label });
       showMessage(`👋 ${label} 驾到！`);
     } else {
       // 已知人脸更新
@@ -49,7 +49,9 @@ export function checkFaces() {
     if (!currentIds.has(id)) {
       if (info.visible && now - info.lastSeen > DISAPPEAR_DELAY) {
         info.visible = false;
-        showMessage(`🐭 ${info.label} 抱头鼠窜了`);
+
+        const stayDuration = Math.round((info.lastSeen - info.firstSeen) / 1000);
+        showMessage(`🐭 ${info.label} 抱头鼠窜了，停留了 ${stayDuration} 秒`);
       }
     }
   }
