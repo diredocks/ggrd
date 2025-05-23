@@ -7,6 +7,18 @@ import (
 	"strconv"
 )
 
+func SetRoutes() {
+	// route for face API
+	http.HandleFunc("/api/face", handleFace)
+	// route for image API
+	http.HandleFunc("/api/image/crop", handleImageCrop)
+	http.HandleFunc("/api/image/frame", handleImageFrame)
+
+	// serve embedded files at "/"
+	fileServer := http.FileServer(http.FS(frontend.FS))
+	http.Handle("/", fileServer)
+}
+
 func handleFace(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -118,16 +130,4 @@ func handleImageFrame(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error sending image", http.StatusInternalServerError)
 		return
 	}
-}
-
-func SetRoutes() {
-	// route for face API
-	http.HandleFunc("/api/face", handleFace)
-	// route for image API
-	http.HandleFunc("/api/image/crop", handleImageCrop)
-	http.HandleFunc("/api/image/frame", handleImageFrame)
-
-	// serve embedded files at "/"
-	fileServer := http.FileServer(http.FS(frontend.FS))
-	http.Handle("/", fileServer)
 }
