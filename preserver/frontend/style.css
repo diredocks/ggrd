@@ -74,3 +74,22 @@ body {
   80% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+/* nav */
+
+.navRecords {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  color: #fff;
+  font-family: sans-serif;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  z-index: 3;
+}
+
+.navRecords:hover {
+  background: rgba(0, 0, 0, 0.7);
+}

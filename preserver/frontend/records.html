@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ggrd: remember me?</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="records.css">
+</head>
+
+<body>
+    <div class="filters">
+        <input type="text" id="nameFilter" placeholder="Filter by name...">
+        <input type="datetime-local" id="timeFilter">
+        <button onclick="applyFilters()">Go</button>
+    </div>
+    <div class="face-grid" id="faceGrid">
+        <!-- Face cards will be inserted here -->
+    </div>
+    <script type="module" src="records.js"></script>
+</body>
+
+</html>

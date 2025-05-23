@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -8,12 +9,14 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/x-icon" href="favicon.png">
 </head>
+
 <body>
   <div id="status">connecting...</div>
   <div id="fps">FPS: 0</div>
   <div id="msg"></div>
   <canvas id="backgroundCanvas"></canvas>
   <canvas id="videoCanvas" width="640" height="480"></canvas>
+  <a href="records.html" class="navRecords">History</a>
 
   <!-- order matters -->
   <script type="module" src="./config.js"></script>
@@ -22,4 +25,5 @@
   <script type="module" src="./msg.js"></script>
   <script type="module" src="./video.js"></script>
 </body>
+
 </html>
