@@ -1,4 +1,4 @@
-import { videoCtx } from './utils.js';
+import { videoCtx, countTickAndUpdateTPS  } from './utils.js';
 import { config } from './config.js';
 
 export let faceDataRaw = [];
@@ -95,6 +95,7 @@ faceWs.onmessage = (event) => {
     const data = JSON.parse(event.data);
     faceDataRaw.length = 0;
     data.faces?.forEach(f => faceDataRaw.push(f));
+    countTickAndUpdateTPS();
   } catch (e) {
     console.error('Invalid face data:', e);
     faceDataRaw.length = 0;

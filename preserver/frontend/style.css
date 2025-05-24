@@ -28,7 +28,7 @@ body {
   z-index: 2;
 }
 
-#status, #fps {
+#status, #fps, #tps {
   position: absolute;
   top: 10px;
   color: #fff;
@@ -37,6 +37,11 @@ body {
   padding: 5px 10px;
   border-radius: 4px;
   z-index: 3;
+}
+
+#tps {
+  top: 45px;
+  right: 10px;
 }
 
 #status {
