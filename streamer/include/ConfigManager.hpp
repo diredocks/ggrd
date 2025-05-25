@@ -16,6 +16,7 @@ struct Config {
     double best_known_threshold = 0.5;
     double distance_threshold = 100.0;
     int max_lost_count = 5;
+    int frame_to_dec = 5;
   } face_recognition;
 };
 

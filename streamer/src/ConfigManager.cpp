@@ -46,6 +46,9 @@ bool ConfigManager::loadConfig(const std::string &configPath) {
       if (fr.contains("max_lost_count")) {
         config_.face_recognition.max_lost_count = fr["max_lost_count"];
       }
+      if (fr.contains("frame_to_dec")) {
+        config_.face_recognition.frame_to_dec = fr["frame_to_dec"];
+      }
     }
 
     spdlog::info("configuration loaded from {}", configPath);

@@ -49,13 +49,17 @@ void VideoStreamer::captureLoop() {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(30));
 
-    // push into frame queue then notify detect thread
-    std::unique_lock lk(queueMutex_);
-    // drop oldest frame if queue full
-    if (frameQueue_.size() >= maxQueueSize_)
-      frameQueue_.pop_front();
-    frameQueue_.push_back(frame);
-    queueCond_.notify_one();
+    if (frameCount_ >= FRAME_TO_DEC) {
+      // push into frame queue then notify detect thread
+      std::unique_lock lk(queueMutex_);
+      // drop oldest frame if queue full
+      if (frameQueue_.size() >= maxQueueSize_)
+        frameQueue_.pop_front();
+      frameQueue_.push_back(frame);
+      queueCond_.notify_one();
+      frameCount_ = 0; // reset counter
+    }
+    frameCount_++;
   }
 }
 
@@ -68,13 +72,13 @@ void VideoStreamer::faceDetectLoop() {
       continue;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
     cv::Mat frame;
 
     std::unique_lock lk(queueMutex_);
     // wait for queue till it got something
-    queueCond_.wait(lk, [this] { return !frameQueue_.empty(); });
+    queueCond_.wait(lk, [this] { return !frameQueue_.empty() || !running_; });
+    if (!running_)
+      break;
     frame = frameQueue_.front();
     frameQueue_.pop_front();
 

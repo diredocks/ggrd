@@ -8,6 +8,7 @@
         "known_faces_folder": "known_faces",
         "best_known_threshold": 0.5,
         "distance_threshold": 100.0,
-        "max_lost_count": 5
+        "max_lost_count": 5,
+        "frame_to_dec": 5
     }
 } 
